@@ -61,6 +61,17 @@
                                            name="fechadenacimiento" required>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="parentezco" class="form-label">Parentezco   </label> 
+
+                                    <select id="parentezco" class="form-select" aria-label="Default select example" name="parentezco">
+                                        <option value="hijo">Hijo/a</option>
+                                        <option value="sobrino">Sobrino/a</option>
+                                        <option value="nieto">Nieto/a</option>
+                                        <option value="hermano">Hermano/a</option>
+                                        <option value="representado">Sin Parentezco</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <label for="correoelectronico" class="form-label">Correo electrónico</label>
                                     <input type="email" class="form-control" id="correoelectronico"
                                            name="correoelectronico" placeholder="Ingresa el correo electrónico del estudiante" required>
@@ -83,6 +94,7 @@
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Correo Electrónico</th>
+                                <th>Parentezco</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,6 +102,7 @@
                                 <td th:text="${estudiante.nombre}"></td>
                                 <td th:text="${estudiante.apellido}"></td>
                                 <td th:text="${estudiante.correoelectronico}"></td>
+                                <td th:text="${estudiante.parentezco}"></td>
                             </tr>
                         </tbody>
                     </table>

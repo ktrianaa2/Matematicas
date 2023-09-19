@@ -21,6 +21,7 @@ public class EstudianteController {
     public String guardarEstudiante(@RequestParam String nombre,
             @RequestParam String apellido,
             @RequestParam String fechadenacimiento,
+            @RequestParam String parentezco,
             @RequestParam String correoelectronico,
             @RequestParam String contrasenia,
             RedirectAttributes redirectAttributes,
@@ -32,7 +33,7 @@ public class EstudianteController {
             redirectAttributes.addFlashAttribute("error", "El correo electrónico ya está en uso.");
             return "redirect:/registrorepresentado";
         }
-        
+
         // Obtener el representanteId de la sesión
         Long representanteId = (Long) session.getAttribute("representanteId");
 
@@ -41,6 +42,7 @@ public class EstudianteController {
         estudiante.setNombre(nombre);
         estudiante.setApellido(apellido);
         estudiante.setFechadenacimiento(fechadenacimiento);
+        estudiante.setParentezco(parentezco);
         estudiante.setCorreoelectronico(correoelectronico);
         estudiante.setContrasenia(contrasenia);
 
@@ -51,15 +53,15 @@ public class EstudianteController {
 
         // Guardar el estudiante en la base de datos
         estudiante = estudianteRepository.save(estudiante);
-        
+
         // Crear una instancia de Calificacion y establecer la relación con el estudiante
         Calificacion calificacion = new Calificacion();
         calificacion.setEstudiante(estudiante);
         // Otras configuraciones de la calificación, como materia, nivel y calificación
-        
+
         redirectAttributes.addFlashAttribute("success", "Estudiante registrado con éxito.");
-        
+
         // Puedes redirigir a una página de éxito o realizar otras acciones
-        return "redirect:/representante"; // Crea esta página si no existe
+        return "redirect:/registrorepresentado"; // Crea esta página si no existe
     }
 }

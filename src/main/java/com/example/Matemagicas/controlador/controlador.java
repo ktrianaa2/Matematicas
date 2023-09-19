@@ -68,28 +68,41 @@ public class controlador {
         ModelAndView modelo = new ModelAndView("perfilestudiante");
         return modelo;
     }
-    
+
     @GetMapping("/vistapruebasuma")
     public ModelAndView vistapruebasuma() {
         ModelAndView modelo = new ModelAndView("pruebasuma");
         return modelo;
     }
-    
+
     @GetMapping("/vistapruebaresta")
     public ModelAndView vistapruebaresta() {
         ModelAndView modelo = new ModelAndView("pruebaresta");
         return modelo;
     }
-    
+
     @GetMapping("/vistapruebadivision")
     public ModelAndView vistapruebadivision() {
         ModelAndView modelo = new ModelAndView("pruebadivision");
         return modelo;
     }
-    
+
     @GetMapping("/vistapruebamultiplicacion")
     public ModelAndView vistapruebamultiplicacion() {
         ModelAndView modelo = new ModelAndView("pruebamultiplicacion");
         return modelo;
     }
+
+    @GetMapping("/administradorvista")
+    public ModelAndView administradorView() {
+        ModelAndView modelo = new ModelAndView("administrador");
+        return modelo;
+    }
+
+    @GetMapping("/perfiladministrador")
+    public ModelAndView perfilAdministradorView() {
+        ModelAndView modelo = new ModelAndView("perfiladministrador");
+        return modelo;
+    }
+ 
 }

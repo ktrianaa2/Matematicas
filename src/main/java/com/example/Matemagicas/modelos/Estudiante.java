@@ -21,6 +21,9 @@ public class Estudiante {
 
     @Column
     private String fechadenacimiento;
+    
+    @Column
+    private String parentezco;
 
     @Column
     private String correoelectronico;

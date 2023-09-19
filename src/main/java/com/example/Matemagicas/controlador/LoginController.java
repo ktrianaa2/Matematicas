@@ -1,11 +1,15 @@
 package com.example.Matemagicas.controlador;
 
 import com.example.Matemagicas.dto.EstudianteCalificacionDTO;
+import com.example.Matemagicas.init.estudianteservice;
+import com.example.Matemagicas.init.representanteservice;
+import com.example.Matemagicas.modelos.Administrador;
 import com.example.Matemagicas.modelos.Calificacion;
 import com.example.Matemagicas.modelos.Estudiante;
 import com.example.Matemagicas.modelos.Representate;
 import com.example.Matemagicas.repositorio.CalificacionRepository;
 import com.example.Matemagicas.repositorio.EstudianteRepository;
+import com.example.Matemagicas.repositorio.AdministradorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +20,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.example.Matemagicas.repositorio.RepresentateRepository;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @SessionAttributes({"nombre", "userRole"})
@@ -27,6 +34,15 @@ public class LoginController {
 
     @Autowired
     private EstudianteRepository estudianteRepository;
+
+    @Autowired
+    private AdministradorRepository administradorRepository;
+
+    @Autowired
+    private estudianteservice estudianteService;
+
+    @Autowired
+    private representanteservice representanteService;
 
     @GetMapping("/representante")
     public String representantepage(HttpSession session) {
@@ -154,6 +170,7 @@ public class LoginController {
     public String login(@RequestParam String correoelectronico, @RequestParam String contrasenia, Model model, HttpSession session) {
         Representate representante = representanteRepository.findByCorreoelectronico(correoelectronico);
         Estudiante estudiante = estudianteRepository.findByCorreoelectronico(correoelectronico);
+        Administrador administrador = administradorRepository.findByCorreoelectronico(correoelectronico);
 
         if (representante != null && representante.getContrasenia().equals(contrasenia)) {
             // Almacenar el representanteId en la sesión
@@ -172,6 +189,14 @@ public class LoginController {
             session.setAttribute("correoEstudiante", estudiante.getCorreoelectronico());
             model.addAttribute("userRole", "estudiante");
             return "redirect:/estudiante";
+        } else if (administrador != null && administrador.getContrasenia().equals(contrasenia)) {
+            // Almacenar el administradorID en la sesión
+            session.setAttribute("administradorId", administrador.getId());
+            session.setAttribute("nombreAdministrador", administrador.getNombre());
+            session.setAttribute("apellidoAdministrador", administrador.getApellido());
+            session.setAttribute("correoAdministrador", administrador.getCorreoelectronico());
+            model.addAttribute("userRole", "administrador");
+            return "redirect:/administrador";
         } else {
             model.addAttribute("error", "Credenciales incorrectas");
             return "index"; // Vuelve a cargar la página de inicio de sesión con un mensaje de error
@@ -195,9 +220,55 @@ public class LoginController {
         return "redirect:";
     }
 
+    @GetMapping("/administrador")
+    public String administradorpage2(Model model, HttpSession session) {
+        Long administradorId = (Long) session.getAttribute("administradorId");
+
+        if (administradorId != null) {
+            List<Estudiante> estudiantes = estudianteService.findAll();
+            model.addAttribute("estudiantes", estudiantes);
+
+            List<Representate> representantes = representanteService.findAll();
+            model.addAttribute("representantes", representantes);
+
+            // Calcular el número de representados para cada representante
+            Map<Long, Integer> numeroDeRepresentados = new HashMap<>();
+            for (Representate representante : representantes) {
+                int count = 0;
+                for (Estudiante estudiante : estudiantes) {
+                    if (estudiante.getRepresentante() != null && Objects.equals(estudiante.getRepresentante().getId(), representante.getId())) {
+                        count++;
+                    }
+                }
+                numeroDeRepresentados.put(representante.getId(), count);
+            }
+            model.addAttribute("numeroDeRepresentados", numeroDeRepresentados);
+
+            // Concatenar nombre y apellido del representante y enviarlo como una cadena
+            List<String> representanteNombresApellidos = new ArrayList<>();
+            for (Estudiante estudiante : estudiantes) {
+                String representanteNombreApellido = estudiante.getRepresentante().getNombre() + " " + estudiante.getRepresentante().getApellido();
+                representanteNombresApellidos.add(representanteNombreApellido);
+            }
+            model.addAttribute("representanteNombresApellidos", representanteNombresApellidos);
+
+            return "administrador";
+        }
+        return "redirect:";
+    }
+
+    @GetMapping("/verperfiladministrador")
+    public String perfilAdministrador(HttpSession session) {
+        if ((String) session.getAttribute("administradorId") != null) {
+            return "perfiladministrador";
+        }
+        return "redirect:";
+    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:";
     }
+
 }

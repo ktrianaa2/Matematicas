@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Panel de Administración</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .card {
+                margin: 5px;
+                padding: 5px;
+            }
+
+            .custom-border {
+                border: 2px solid black;
+                text-align: center;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .custom-border:hover {
+                background-color: #f0f0f0;
+            }
+
+            .custom-header {
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 24px;
+                font-weight: bold;
+                color: white;
+                padding: 10px;
+                background-color: purple;
+            }
+
+            .header-container {
+                max-width: 10000px;
+                margin: 0 auto;
+            }
+
+            .student-card,
+            .rep-card,
+            .admin-card {
+                margin-bottom: 5px;
+                margin-top: -10px;
+            }
+
+            /* Nueva clase para el encabezado fijo */
+            .fixed-header {
+                position: fixed;
+                width: 100%;
+                top: 0;
+                left: 0;
+                z-index: 1000;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid p-0">
+            <nav class="navbar navbar-dark bg-dark fixed-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/representante">Matemágicas</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Matemágicas</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="/administrador">Inicio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/perfiladministrador">Perfil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout">Cerrrar Sesión</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <br>     
+            <br>           
+
+            <br>           
+
+            <br>           
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6">
+                    <h1 class="card-title text-center">Representantes Registrados</h1>
+                    <input type="text" id="searchRepresentantes" placeholder="Buscar representantes" class="form-control">
+
+                    <table class="table" id="representantesTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo Electrónico</th>
+                                <th>N° de Representados</th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="representate , repIndex : ${representantes}">
+                                <td th:text="${representate.nombre}"></td>
+                                <td th:text="${representate.apellido}"></td>
+                                <td th:text="${representate.correoelectronico}"></td>
+                                <td th:text="${representate != null ? numeroDeRepresentados[representate.id] ?: 0 : 0}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <div class="row justify-content-center">
+                        <h1 class="card-title text-center">Estudiantes Registrados</h1>
+
+                        <div class="col-md-6">
+                            <input type="text" id="searchEstudiantes" placeholder="Buscar estudiantes" class="form-control">
+
+                        </div>
+                        <div class="col-md-6">
+                            <select id="filterParentesco" class="form-select">
+                                <option value="todos">Todos los parentescos</option>
+                                <option value="hijo">Hijo/a</option>
+                                <option value="sobrino">Sobrino/a</option>
+                                <option value="nieto">Nieto/a</option>
+                                <option value="hermano">Hermano/a</option>
+                                <option value="representado">Sin Parentezco</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table" id="estudiantesTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo Electrónico</th>
+                                <th>Representante</th>
+                                <th>Parentezco</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="estudiante, estIndex : ${estudiantes}">
+                                <td th:text="${estudiante.nombre}"></td>
+                                <td th:text="${estudiante.apellido}"></td>
+                                <td th:text="${estudiante.correoelectronico}"></td>
+                                <td th:text="${representanteNombresApellidos[__${estIndex.index}__]}"></td> 
+                                <td th:text="${estudiante.parentezco}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                // Buscador para representantes
+                $('#searchRepresentantes').keyup(function () {
+                    searchRepresentantes();
+                });
+
+                // Buscador para estudiantes
+                $('#searchEstudiantes').keyup(function () {
+                    searchEstudiantes();
+                });
+
+                // Filtro por parentesco
+                $('#filterParentesco').change(function () {
+                    searchEstudiantes();
+                });
+
+                function searchRepresentantes() {
+                    var searchText = $('#searchRepresentantes').val().toLowerCase();
+                    $('#representantesTable tbody tr').each(function () {
+                        var rowData = $(this).text().toLowerCase();
+
+                        // Verifica si el texto de búsqueda coincide con el nombre, apellido o correo electrónico
+                        var matchesSearchText = rowData.includes(searchText) ||
+                                (searchText.includes(' ') && searchText.split(' ').every(word => rowData.includes(word)));
+
+                        if (matchesSearchText) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                }
+
+
+                function searchEstudiantes() {
+                    var searchText = $('#searchEstudiantes').val().toLowerCase();
+                    var selectedParentesco = $('#filterParentesco').val().toLowerCase();
+
+                    $('#estudiantesTable tbody tr').each(function () {
+                        var rowData = $(this).text().toLowerCase();
+                        var parentesco = $(this).find('td:eq(4)').text().toLowerCase(); // Cambia el índice según la columna que contiene el parentesco
+
+                        // Verifica si el texto de búsqueda coincide con el nombre, apellido o correo electrónico
+                        var matchesSearchText = rowData.includes(searchText) ||
+                                (searchText.includes(' ') && searchText.split(' ').every(word => rowData.includes(word)));
+
+                        // Verifica si el parentesco coincide con la selección o es "Todos los parentescos"
+                        var matchesParentesco = (selectedParentesco === 'todos' || parentesco === selectedParentesco);
+
+                        if (matchesSearchText && matchesParentesco) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                }
+            }
+            );
+        </script>
+
+    </body>
+</html>
